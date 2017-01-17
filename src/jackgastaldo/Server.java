@@ -40,6 +40,7 @@ public class Server {
 		createContents();
 		shell.open();
 		shell.layout();
+		avvia();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -65,19 +66,35 @@ public class Server {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String nome="";
-				/*while(true){
-					Socket s=ss.accept();
-					InputStreamReader isr = new InputStreamReader(s.getInputStream());
-					BufferedReader in = new BufferedReader(isr);
-					System.out.println("Il server riceve:" + in.readLine());
+				while(true){
+					try {
+						Socket s=ss.accept();
+						InputStreamReader isr = new InputStreamReader(s.getInputStream());
+						BufferedReader in = new BufferedReader(isr);
+						System.out.println("Il server riceve:" + in.readLine());
+						nome=in.readLine();
+						
+						
+						
+						s.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
-				InputStreamReader isr = new InputStreamReader(s.getInputStream());
-				BufferedReader in = new BufferedReader(isr);
-				System.out.println("Il server riceve:" + in.readLine());
-			*/}
+			}
 		});
 		btnRefresh.setBounds(107, 331, 75, 25);
 		btnRefresh.setText("REFRESH");
 
+	}
+	
+	private void avvia(){
+		try {
+			ss=new ServerSocket(9999);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

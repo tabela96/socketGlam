@@ -14,9 +14,7 @@
 		
 // Ricevere testo
 
-	InputStreamReader isr = new InputStreamReader(s.getInputStream());
-	BufferedReader in = new BufferedReader(isr);
-	System.out.println("Il server riceve:" + in.readLine());
+	
 	
 	
 //Inviare testo
