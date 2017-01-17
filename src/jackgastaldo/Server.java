@@ -3,13 +3,17 @@ package jackgastaldo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.List;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 
 public class Server {
 
 	protected Shell shell;
-
+	private ServerSocket ss;
 	/**
 	 * Launch the application.
 	 * @param args
@@ -31,6 +35,7 @@ public class Server {
 		createContents();
 		shell.open();
 		shell.layout();
+		partenza();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -55,5 +60,14 @@ public class Server {
 		btnRefresh.setBounds(107, 331, 75, 25);
 		btnRefresh.setText("REFRESH");
 
+	}
+	
+	private void partenza(){
+		try {
+			ss=new ServerSocket(9999);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

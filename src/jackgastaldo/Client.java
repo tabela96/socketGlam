@@ -1,6 +1,10 @@
 package jackgastaldo;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
+
+import javax.swing.JOptionPane;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -8,12 +12,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class Client {
 
 	protected Shell shell;
 	private Socket s;
-	private Text text;
+	private Text txtNome;
 
 	/**
 	 * Launch the application.
@@ -36,6 +42,7 @@ public class Client {
 		createContents();
 		shell.open();
 		shell.layout();
+		avvia();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -52,16 +59,43 @@ public class Client {
 		shell.setText("SWT Application");
 		
 		Label lblNome = new Label(shell, SWT.NONE);
-		lblNome.setBounds(10, 20, 55, 15);
+		lblNome.setBounds(10, 20, 36, 15);
 		lblNome.setText("Nome:");
 		
-		text = new Text(shell, SWT.BORDER);
-		text.setBounds(59, 17, 124, 21);
+		txtNome = new Text(shell, SWT.BORDER);
+		txtNome.setBounds(59, 17, 124, 21);
 		
 		Button btnConferma = new Button(shell, SWT.NONE);
+		btnConferma.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String nome="";
+				if(txtNome.getText()==""){
+					JOptionPane.showMessageDialog(null, "Inserisci il nome!", "Errore!", JOptionPane.ERROR_MESSAGE);
+				}else{
+					nome=txtNome.getText();
+					try {
+						PrintWriter out=new PrintWriter(s.getOutputStream(), true);
+						out.println(nome);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 		btnConferma.setBounds(209, 15, 75, 25);
 		btnConferma.setText("CONFERMA");
 
+	}
+	
+	private void avvia(){
+		try {
+			s=new Socket("localhost", 9999);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
