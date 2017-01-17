@@ -4,11 +4,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.List;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class Server {
 
@@ -35,7 +40,6 @@ public class Server {
 		createContents();
 		shell.open();
 		shell.layout();
-		partenza();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -57,17 +61,23 @@ public class Server {
 		list.setBounds(10, 10, 269, 310);
 		
 		Button btnRefresh = new Button(shell, SWT.NONE);
+		btnRefresh.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String nome="";
+				/*while(true){
+					Socket s=ss.accept();
+					InputStreamReader isr = new InputStreamReader(s.getInputStream());
+					BufferedReader in = new BufferedReader(isr);
+					System.out.println("Il server riceve:" + in.readLine());
+				}
+				InputStreamReader isr = new InputStreamReader(s.getInputStream());
+				BufferedReader in = new BufferedReader(isr);
+				System.out.println("Il server riceve:" + in.readLine());
+			*/}
+		});
 		btnRefresh.setBounds(107, 331, 75, 25);
 		btnRefresh.setText("REFRESH");
 
-	}
-	
-	private void partenza(){
-		try {
-			ss=new ServerSocket(9999);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }
