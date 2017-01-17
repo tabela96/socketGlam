@@ -34,6 +34,8 @@ public class Server {
 			}
 		}
 	}
+	
+	
 
 	/**
 	 * Create contents of the window.
