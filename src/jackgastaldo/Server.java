@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -19,6 +20,7 @@ public class Server {
 
 	protected Shell shell;
 	private ServerSocket ss;
+	private ArrayList<String> nomi = new ArrayList<String>();
 	/**
 	 * Launch the application.
 	 * @param args
@@ -65,15 +67,21 @@ public class Server {
 		btnRefresh.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				//pulisco la lista
+				list.removeAll();
 				String nome="";
+				
 				while(true){
 					try {
 						Socket s=ss.accept();
 						InputStreamReader isr = new InputStreamReader(s.getInputStream());
 						BufferedReader in = new BufferedReader(isr);
-						System.out.println("Il server riceve:" + in.readLine());
+						//System.out.println("Il server riceve:" + in.readLine());
 						nome=in.readLine();
+						nomi.add(nome);
 						
+						//aggiungo alla lista
+						list.add(nomi.toString());
 						
 						
 						s.close();
