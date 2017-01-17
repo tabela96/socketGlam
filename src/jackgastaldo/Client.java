@@ -1,11 +1,14 @@
 package jackgastaldo;
 
+import java.net.Socket;
+
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public class Client {
 
 	protected Shell shell;
+	private Socket s;
 
 	/**
 	 * Launch the application.
