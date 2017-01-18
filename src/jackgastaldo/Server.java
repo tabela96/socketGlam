@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.*;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
@@ -21,8 +22,14 @@ public class Server {
 	protected Shell shell;
 	private ServerSocket ss;
 	private ArrayList<String> nomi = new ArrayList<String>();
+	private Connection cn;
+	private Statement st;
+	private ResultSet rs;
+	private String sql;
+
 	/**
 	 * Launch the application.
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -37,20 +44,25 @@ public class Server {
 	/**
 	 * Open the window.
 	 */
-	public void open() {
+	public void open() throws SQLException{
 		Display display = Display.getDefault();
 		createContents();
 		shell.open();
 		shell.layout();
 		avvia();
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println("ClassNotFoundException: ");
+			System.err.println(e.getMessage());
+		}
+		cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/glam?user=root&password="); //ERRORE
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
 		}
 	}
-	
-	
 
 	/**
 	 * Create contents of the window.
@@ -59,47 +71,39 @@ public class Server {
 		shell = new Shell();
 		shell.setSize(307, 404);
 		shell.setText("SWT Application");
-		
+
 		List list = new List(shell, SWT.BORDER);
 		list.setBounds(10, 10, 269, 310);
-		
+
 		Button btnRefresh = new Button(shell, SWT.NONE);
 		btnRefresh.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//pulisco la lista
-				list.removeAll();
-				String nome="";
-				
-				while(true){
-					try {
-						Socket s=ss.accept();
-						InputStreamReader isr = new InputStreamReader(s.getInputStream());
-						BufferedReader in = new BufferedReader(isr);
-						//System.out.println("Il server riceve:" + in.readLine());
-						nome=in.readLine();
-						nomi.add(nome);
-						
-						//aggiungo alla lista
-						list.add(nomi.toString());
-						
-						
-						s.close();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+				String nome = "";
+				try {
+					Socket s = ss.accept();
+					InputStreamReader isr = new InputStreamReader(s.getInputStream());
+					BufferedReader in = new BufferedReader(isr);
+					nome = in.readLine();
+					list.add(nome);
+					
+					sql="INSERT INTO iscrizioni (nome) VALUES ('"+nome+"')";
+					System.out.println(sql);
+					s.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
 		btnRefresh.setBounds(107, 331, 75, 25);
-		btnRefresh.setText("REFRESH");
+		btnRefresh.setText("Refresh");
 
 	}
-	
-	private void avvia(){
+
+	private void avvia() {
 		try {
-			ss=new ServerSocket(9999);
+			ss = new ServerSocket(9999);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
