@@ -17,9 +17,10 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public class Client {
 
-	protected Shell shell;
+	protected Shell shlClient;
 	private Socket s;
 	private Text txtNome;
+
 
 	/**
 	 * Launch the application.
@@ -40,10 +41,10 @@ public class Client {
 	public void open() {
 		Display display = Display.getDefault();
 		createContents();
-		shell.open();
-		shell.layout();
+		shlClient.open();
+		shlClient.layout();
 		avvia();
-		while (!shell.isDisposed()) {
+		while (!shlClient.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -54,18 +55,18 @@ public class Client {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shell = new Shell();
-		shell.setSize(310, 91);
-		shell.setText("SWT Application");
+		shlClient = new Shell();
+		shlClient.setSize(310, 91);
+		shlClient.setText("Client");
 		
-		Label lblNome = new Label(shell, SWT.NONE);
+		Label lblNome = new Label(shlClient, SWT.NONE);
 		lblNome.setBounds(10, 20, 36, 15);
 		lblNome.setText("Nome:");
 		
-		txtNome = new Text(shell, SWT.BORDER);
+		txtNome = new Text(shlClient, SWT.BORDER);
 		txtNome.setBounds(59, 17, 124, 21);
 		
-		Button btnConferma = new Button(shell, SWT.NONE);
+		Button btnConferma = new Button(shlClient, SWT.NONE);
 		btnConferma.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

@@ -19,13 +19,14 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public class Server {
 
-	protected Shell shell;
+	protected Shell shlIscrizioni;
 	private ServerSocket ss;
 	private ArrayList<String> nomi = new ArrayList<String>();
 	private Connection cn;
 	private Statement st;
 	private ResultSet rs;
 	private String sql;
+	private boolean ciao;
 
 	/**
 	 * Launch the application.
@@ -47,8 +48,8 @@ public class Server {
 	public void open() throws SQLException{
 		Display display = Display.getDefault();
 		createContents();
-		shell.open();
-		shell.layout();
+		shlIscrizioni.open();
+		shlIscrizioni.layout();
 		avvia();
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -57,7 +58,7 @@ public class Server {
 			System.err.println(e.getMessage());
 		}
 		cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/glam?user=root&password="); //ERRORE
-		while (!shell.isDisposed()) {
+		while (!shlIscrizioni.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -68,14 +69,14 @@ public class Server {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shell = new Shell();
-		shell.setSize(307, 404);
-		shell.setText("SWT Application");
+		shlIscrizioni = new Shell();
+		shlIscrizioni.setSize(307, 404);
+		shlIscrizioni.setText("Iscrizioni");
 
-		List list = new List(shell, SWT.BORDER);
+		List list = new List(shlIscrizioni, SWT.BORDER);
 		list.setBounds(10, 10, 269, 310);
 
-		Button btnRefresh = new Button(shell, SWT.NONE);
+		Button btnRefresh = new Button(shlIscrizioni, SWT.NONE);
 		btnRefresh.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -87,10 +88,16 @@ public class Server {
 					nome = in.readLine();
 					list.add(nome);
 					
-					sql="INSERT INTO iscrizioni (nome) VALUES ('"+nome+"')";
+					sql="INSERT INTO iscrizioni (nome, dataOra) VALUES ('"+nome+"', NOW())";
+					st = cn.createStatement();
+					ciao=st.execute(sql);
 					System.out.println(sql);
 					s.close();
+					cn.close();
 				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
