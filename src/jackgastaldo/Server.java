@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -146,7 +147,7 @@ public class Server {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				list.removeAll();
-				if(btnFiltraPerData.getSelection()==false){
+				if (btnFiltraPerData.getSelection() == false) {
 					sql = "SELECT nome FROM iscrizioni;";
 					try {
 						st = cn.createStatement();
@@ -161,15 +162,19 @@ public class Server {
 						e1.printStackTrace();
 					}
 					System.out.println(sql);
-				}else{
+				} else {
+					String confrontoData = ""; //data del database
+					String dataFiltro="";	//data del server
 					Date data;
-					sql="SELECT dataOra FROM iscrizioni;";
+					sql = "SELECT dataOra FROM iscrizioni;";
 					try {
-						st=cn.createStatement();
-						rs=st.executeQuery(sql);
-						/*
-						 * FARE LA RICERCA PER DATA
-						 */
+						st = cn.createStatement();
+						rs = st.executeQuery(sql);
+						while (rs.next() == true) {
+							confrontoData = rs.getString("dataOra");
+							//System.out.println(confrontoData);
+						}
+						SimpleDateFormat formato=new SimpleDateFormat("yyyy-MMM-dd");
 						
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
