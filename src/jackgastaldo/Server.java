@@ -12,6 +12,8 @@ import java.net.Socket;
 import java.sql.*;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -86,14 +88,14 @@ public class Server {
 					InputStreamReader isr = new InputStreamReader(s.getInputStream());
 					BufferedReader in = new BufferedReader(isr);
 					nome = in.readLine();
-					list.add(nome);
+					//list.add(nome);
 					sql = "";
 					sql = "INSERT INTO iscrizioni (nome, dataOra) VALUES ('" + nome + "', NOW())";
 					st = cn.createStatement();
 					ciao = st.execute(sql);
 					System.out.println(sql);
+					JOptionPane.showMessageDialog(null, ""+nome+" inserito con successo", "Inserimento completato", JOptionPane.INFORMATION_MESSAGE);
 					s.close();
-					cn.close();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -110,6 +112,7 @@ public class Server {
 		btnCaricaIscritti.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				list.removeAll();
 				sql = "SELECT nome FROM iscrizioni;";
 				try {
 					st = cn.createStatement();
