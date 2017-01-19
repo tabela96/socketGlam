@@ -18,6 +18,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Label;
 
 public class Server {
 
@@ -72,7 +74,7 @@ public class Server {
 	 */
 	protected void createContents() {
 		shlIscrizioni = new Shell();
-		shlIscrizioni.setSize(307, 404);
+		shlIscrizioni.setSize(418, 404);
 		shlIscrizioni.setText("Iscrizioni");
 
 		List list = new List(shlIscrizioni, SWT.BORDER);
@@ -109,7 +111,8 @@ public class Server {
 								"Inserimento completato", JOptionPane.INFORMATION_MESSAGE);
 						s.close();
 					} else {
-						JOptionPane.showMessageDialog(null, "Il nome esiste già.", "ATTENZIONE", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Il nome esiste già.", "ATTENZIONE",
+								JOptionPane.ERROR_MESSAGE);
 					}
 
 				} catch (IOException e2) {
@@ -121,28 +124,59 @@ public class Server {
 		btnSalva.setBounds(193, 331, 86, 25);
 		btnSalva.setText("Salva nel DB");
 
+		DateTime filtroData = new DateTime(shlIscrizioni, SWT.BORDER);
+		filtroData.setBounds(299, 31, 80, 24);
+		filtroData.setVisible(false);
+
+		Button btnFiltraPerData = new Button(shlIscrizioni, SWT.CHECK);
+		btnFiltraPerData.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (btnFiltraPerData.getSelection() == false) {
+					filtroData.setVisible(false);
+				} else {
+					filtroData.setVisible(true);
+				}
+			}
+		});
+		btnFiltraPerData.setBounds(299, 10, 93, 16);
+		btnFiltraPerData.setText("Filtra per data");
 		Button btnCaricaIscritti = new Button(shlIscrizioni, SWT.NONE);
 		btnCaricaIscritti.addSelectionListener(new SelectionAdapter() {
-
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				list.removeAll();
-				sql = "SELECT nome FROM iscrizioni;";
-				try {
-					st = cn.createStatement();
-					rs = st.executeQuery(sql);
+				if(btnFiltraPerData.getSelection()==false){
+					sql = "SELECT nome FROM iscrizioni;";
+					try {
+						st = cn.createStatement();
+						rs = st.executeQuery(sql);
 
-					while (rs.next() == true) {
-						nomi.add(rs.getString("nome"));
-						list.add(rs.getString("nome"));
+						while (rs.next() == true) {
+							nomi.add(rs.getString("nome"));
+							list.add(rs.getString("nome"));
+						}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					System.out.println(sql);
+				}else{
+					Date data;
+					sql="SELECT dataOra FROM iscrizioni;";
+					try {
+						st=cn.createStatement();
+						rs=st.executeQuery(sql);
+						/*
+						 * FARE LA RICERCA PER DATA
+						 */
+						
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
-				System.out.println(sql);
 			}
-
 		});
 		btnCaricaIscritti.setBounds(10, 331, 86, 25);
 		btnCaricaIscritti.setText("Carica iscritti");
