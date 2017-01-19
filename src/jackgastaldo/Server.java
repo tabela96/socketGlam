@@ -28,7 +28,7 @@ public class Server {
 	private Statement st;
 	private ResultSet rs;
 	private String sql;
-	private boolean ciao;
+	private boolean ciao = false;
 
 	/**
 	 * Launch the application.
@@ -83,26 +83,39 @@ public class Server {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String nome = "";
+				Socket s;
 				try {
-					Socket s = ss.accept();
+					s = ss.accept();
 					InputStreamReader isr = new InputStreamReader(s.getInputStream());
 					BufferedReader in = new BufferedReader(isr);
 					nome = in.readLine();
-					//list.add(nome);
-					sql = "";
-					sql = "INSERT INTO iscrizioni (nome, dataOra) VALUES ('" + nome + "', NOW())";
-					st = cn.createStatement();
-					ciao = st.execute(sql);
-					System.out.println(sql);
-					JOptionPane.showMessageDialog(null, ""+nome+" inserito con successo", "Inserimento completato", JOptionPane.INFORMATION_MESSAGE);
-					s.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					for (int i = 0; i < nomi.size(); i++) {
+						System.out.println("nome: " + nomi.get(i) + " == " + nome);
+						if (nomi.get(i).equals(nome)) {
+							ciao = true;
+						}
+					}
+					if (ciao == false) {
+						sql = "";
+						sql = "INSERT INTO iscrizioni (nome, dataOra) VALUES ('" + nome + "', NOW())";
+						try {
+							st = cn.createStatement();
+							ciao = st.execute(sql);
+						} catch (SQLException e1) {
+							e1.printStackTrace();
+						}
+						System.out.println(sql);
+						JOptionPane.showMessageDialog(null, "" + nome + " inserito con successo",
+								"Inserimento completato", JOptionPane.INFORMATION_MESSAGE);
+						s.close();
+					} else {
+						JOptionPane.showMessageDialog(null, "Il nome esiste già.", "ATTENZIONE", JOptionPane.ERROR_MESSAGE);
+					}
+
+				} catch (IOException e2) {
+					e2.printStackTrace();
 				}
+
 			}
 		});
 		btnSalva.setBounds(193, 331, 86, 25);
@@ -110,6 +123,7 @@ public class Server {
 
 		Button btnCaricaIscritti = new Button(shlIscrizioni, SWT.NONE);
 		btnCaricaIscritti.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				list.removeAll();
@@ -117,8 +131,9 @@ public class Server {
 				try {
 					st = cn.createStatement();
 					rs = st.executeQuery(sql);
-					
-					while (rs.next()==true) {
+
+					while (rs.next() == true) {
+						nomi.add(rs.getString("nome"));
 						list.add(rs.getString("nome"));
 					}
 				} catch (SQLException e1) {
@@ -127,6 +142,7 @@ public class Server {
 				}
 				System.out.println(sql);
 			}
+
 		});
 		btnCaricaIscritti.setBounds(10, 331, 86, 25);
 		btnCaricaIscritti.setText("Carica iscritti");
