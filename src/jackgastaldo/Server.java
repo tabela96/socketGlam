@@ -45,7 +45,7 @@ public class Server {
 	/**
 	 * Open the window.
 	 */
-	public void open() throws SQLException{
+	public void open() throws SQLException {
 		Display display = Display.getDefault();
 		createContents();
 		shlIscrizioni.open();
@@ -57,7 +57,7 @@ public class Server {
 			System.out.println("ClassNotFoundException: ");
 			System.err.println(e.getMessage());
 		}
-		cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/glam?user=root&password="); //ERRORE
+		cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/glam?user=root&password="); // ERRORE
 		while (!shlIscrizioni.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -76,8 +76,8 @@ public class Server {
 		List list = new List(shlIscrizioni, SWT.BORDER);
 		list.setBounds(10, 10, 269, 310);
 
-		Button btnRefresh = new Button(shlIscrizioni, SWT.NONE);
-		btnRefresh.addSelectionListener(new SelectionAdapter() {
+		Button btnSalva = new Button(shlIscrizioni, SWT.NONE);
+		btnSalva.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String nome = "";
@@ -87,10 +87,10 @@ public class Server {
 					BufferedReader in = new BufferedReader(isr);
 					nome = in.readLine();
 					list.add(nome);
-					
-					sql="INSERT INTO iscrizioni (nome, dataOra) VALUES ('"+nome+"', NOW())";
+					sql = "";
+					sql = "INSERT INTO iscrizioni (nome, dataOra) VALUES ('" + nome + "', NOW())";
 					st = cn.createStatement();
-					ciao=st.execute(sql);
+					ciao = st.execute(sql);
 					System.out.println(sql);
 					s.close();
 					cn.close();
@@ -103,8 +103,30 @@ public class Server {
 				}
 			}
 		});
-		btnRefresh.setBounds(107, 331, 75, 25);
-		btnRefresh.setText("Refresh");
+		btnSalva.setBounds(193, 331, 86, 25);
+		btnSalva.setText("Salva nel DB");
+
+		Button btnCaricaIscritti = new Button(shlIscrizioni, SWT.NONE);
+		btnCaricaIscritti.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sql = "SELECT nome FROM iscrizioni;";
+				try {
+					st = cn.createStatement();
+					rs = st.executeQuery(sql);
+					
+					while (rs.next()==true) {
+						list.add(rs.getString("nome"));
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				System.out.println(sql);
+			}
+		});
+		btnCaricaIscritti.setBounds(10, 331, 86, 25);
+		btnCaricaIscritti.setText("Carica iscritti");
 
 	}
 
