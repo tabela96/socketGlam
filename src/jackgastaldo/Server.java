@@ -125,6 +125,10 @@ public class Server {
 		btnSalva.setBounds(193, 331, 86, 25);
 		btnSalva.setText("Salva nel DB");
 
+		DateTime ora = new DateTime(shlIscrizioni, SWT.BORDER | SWT.TIME);
+		ora.setBounds(299, 61, 80, 24);
+		ora.setVisible(false);
+
 		DateTime filtroData = new DateTime(shlIscrizioni, SWT.BORDER);
 		filtroData.setBounds(299, 31, 80, 24);
 		filtroData.setVisible(false);
@@ -135,8 +139,10 @@ public class Server {
 			public void widgetSelected(SelectionEvent e) {
 				if (btnFiltraPerData.getSelection() == false) {
 					filtroData.setVisible(false);
+					ora.setVisible(false);
 				} else {
 					filtroData.setVisible(true);
+					ora.setVisible(true);
 				}
 			}
 		});
@@ -163,19 +169,24 @@ public class Server {
 					}
 					System.out.println(sql);
 				} else {
-					String confrontoData = ""; //data del database
-					String dataFiltro="";	//data del server
-					Date data;
+					String confrontoData = ""; // data del database
+					String dataFiltro = filtroData.getYear() + "-" + filtroData.getMonth() + "-" + filtroData.getDay()
+							+ " " + ora.getHours() + ":" + ora.getMinutes() + ":" + ora.getSeconds(); // data
+																										// del
+																										// server
 					sql = "SELECT dataOra FROM iscrizioni;";
 					try {
 						st = cn.createStatement();
 						rs = st.executeQuery(sql);
 						while (rs.next() == true) {
 							confrontoData = rs.getString("dataOra");
-							//System.out.println(confrontoData);
+							System.out.println(confrontoData);
+							System.out.println(dataFiltro);
+							if(confrontoData.equals(dataFiltro)){
+								
+							}
 						}
-						SimpleDateFormat formato=new SimpleDateFormat("yyyy-MMM-dd");
-						
+
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
